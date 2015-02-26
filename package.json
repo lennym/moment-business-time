@@ -1,0 +1,28 @@
+{
+  "name": "business-hours",
+  "version": "0.0.0",
+  "description": "Calculate time differences in business hours and days, with configurable opening hours and holidays",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/. --require test/init.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lennym/business-hours.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lennym/business-hours/issues"
+  },
+  "homepage": "https://github.com/lennym/business-hours",
+  "dependencies": {
+    "moment": "^2.9.0"
+  },
+  "devDependencies": {
+    "chai": "^2.1.0",
+    "mocha": "^2.1.0",
+    "sinon": "^1.12.2",
+    "sinon-chai": "^2.7.0"
+  }
+}
