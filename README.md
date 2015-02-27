@@ -129,6 +129,20 @@ moment('2015-02-27T16:00:00Z').subtractWorkingTime(5, 'hours', 30, 'minutes');
 
 ```
 
+### `moment#workingDiff`
+
+Returns: `Number`
+
+Calculates the difference between two moments, counting only working time. Arguments are as per [moment#diff](http://momentjs.com/docs/#/displaying/difference/)
+
+#### Example:
+```javascript
+moment('2015-02-27T16:30:00Z').workingDiff(moment('2015-02-26T12:00:00Z'), 'hours');
+// 12
+moment('2015-02-27T16:30:00Z').workingDiff(moment('2015-02-26T12:00:00Z'), 'hours', true);
+// 12.5
+```
+
 ## Configuration
 
 The working hours used for a locale can be modified using moment's `locale` method. The default working hours are 09:00-17:00, Mon-Fri.

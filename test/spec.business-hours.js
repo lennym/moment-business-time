@@ -385,6 +385,22 @@ describe('moment.business-hours', function () {
             to.workingDiff(from, 'hours', true).should.equal(11.5);
         });
 
+        it('calculates the difference between dates in working days', function () {
+            var from = moment('2015-02-27T10:00:00'),
+                to = moment('2015-03-20T13:30:00');
+
+            from.workingDiff(to, 'days').should.equal(16);
+            to.workingDiff(from, 'days').should.equal(-16);
+        });
+
+        it('handles units that don\'t really makes sense for business opening times by deferring to moment', function () {
+            var from = moment('2015-02-27'),
+                to = moment('2015-05-27');
+
+            from.workingDiff(to, 'months').should.equal(-3);
+            to.workingDiff(from, 'months').should.equal(3);
+        });
+
         it('handles inconsistent closing hours', function () {
             moment.locale('en', {
                 workinghours:  {
