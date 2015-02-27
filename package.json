@@ -1,7 +1,7 @@
 {
   "name": "moment-business-time",
   "version": "0.0.0",
-  "description": "Calculate time differences in business hours and days, with configurable opening hours and holidays",
+  "description": "Query and manipulate moment objects within the context of business/working hours",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/. --require test/init.js"
@@ -10,12 +10,20 @@
     "type": "git",
     "url": "https://github.com/lennym/moment-business-time.git"
   },
-  "author": "",
+  "author": "Leonard Martin<hello@lennym.co.uk>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/lennym/moment-business-time/issues"
   },
   "homepage": "https://github.com/lennym/moment-business-time",
+  "keywords": [
+    "moment",
+    "working time",
+    "workings days",
+    "working hours",
+    "business time",
+    "business hours"
+  ],
   "dependencies": {
     "moment": "^2.9.0"
   },
