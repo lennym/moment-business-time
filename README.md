@@ -13,7 +13,8 @@ npm install [--save] moment-business-time
 
 ### `moment#isWorkingDay`
 
-Returns: Boolean
+Returns: `Boolean`
+
 Determines if the day of the current instance is a working day. Working days are defined as any day with working hours in the current locale.
 
 #### Example:
@@ -26,7 +27,8 @@ moment('2015-02-28').isWorkingDay();
 
 ### `moment#isWorkingTime`
 
-Returns: Boolean
+Returns: `Boolean`
+
 Determines if the day and time of the current instance corresponds to during business hours as defined by the currnet locale.
 
 #### Example:
@@ -39,7 +41,8 @@ moment('2015-02-27T20:00:00').isWorkingTime();
 
 ### `moment#nextWorkingDay`
 
-Returns: moment
+Returns: `moment`
+
 Returns a new moment representing the next day considered to be a working day. The hours/minutes/seconds will be as for the source moment.
 
 #### Example:
@@ -52,7 +55,8 @@ moment('2015-02-28T20:00:00Z').nextWorkingDay();
 
 ### `moment#nextWorkingTime`
 
-Returns: moment
+Returns: `moment`
+
 Returns a new moment representing the start of the next day considered to be a working day.
 
 #### Example:
@@ -65,7 +69,8 @@ moment('2015-02-28T20:00:00Z').nextWorkingTime();
 
 ### `moment#lastWorkingDay`
 
-Returns: moment
+Returns: `moment`
+
 Returns a new moment representing the previous day considered to be a working day. The hours/minutes/seconds will be as for the source moment.
 
 #### Example:
@@ -78,7 +83,8 @@ moment('2015-02-28T20:00:00Z').lastWorkingDay();
 
 ### `moment#lastWorkingTime`
 
-Returns: moment
+Returns: `moment`
+
 Returns a new moment representing the end of the previous day considered to be a working day.
 
 #### Example:
@@ -91,7 +97,8 @@ moment('2015-02-28T20:00:00Z').lastWorkingTime();
 
 ### `moment#addWorkingTime`
 
-Returns: self
+Returns: `self`
+
 Adds an amount of working time to a moment, modifying the original moment instance.
 
 #### Example:
@@ -107,7 +114,8 @@ moment('2015-02-27T10:00:00Z').addWorkingTime(5, 'hours', 30, 'minutes');
 
 ### `moment#subtractWorkingTime`
 
-Returns: self
+Returns: `self`
+
 Adds an amount of working time to a moment, modifying the original moment instance.
 
 #### Example:
@@ -123,7 +131,7 @@ moment('2015-02-27T16:00:00Z').subtractWorkingTime(5, 'hours', 30, 'minutes');
 
 ## Configuration
 
-The working hours used for a locale can be modified using moment's `locale` method.
+The working hours used for a locale can be modified using moment's `locale` method. The default working hours are 09:00-17:00, Mon-Fri.
 
 Example:
 
