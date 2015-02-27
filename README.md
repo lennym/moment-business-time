@@ -145,6 +145,8 @@ moment('2015-02-27T16:30:00Z').workingDiff(moment('2015-02-26T12:00:00Z'), 'hour
 
 ## Configuration
 
+### Working hours
+
 The working hours used for a locale can be modified using moment's `locale` method. The default working hours are 09:00-17:00, Mon-Fri.
 
 Example:
@@ -164,6 +166,35 @@ moment.locale('en', {
 });
 moment('Wed Feb 25 2015 15:00:00 GMT+0000').isWorkingTime() // false
 moment('Mon Feb 23 2015 09:00:00 GMT+0000').isWorkingTime() // false
+```
+
+### Holidays
+
+Holidays which should not be considered as working days can be configured by passing them as locale information.
+
+Example:
+
+```javascript
+moment.locale('en', {
+    holidays: [
+        '2015-05-04'
+    ]
+});
+moment('2015-05-04').isWorkingDay() // false
+```
+
+Recurring holidays can also be set with wildcard parameters.
+
+```javascript
+moment.locale('en', {
+    holidays: [
+        '*-12-25'
+    ]
+});
+moment('2015-12-25').isWorkingDay() // false
+moment('2016-12-25').isWorkingDay() // false
+moment('2017-12-25').isWorkingDay() // false
+moment('2018-12-25').isWorkingDay() // false
 ```
 
 ## Running tests

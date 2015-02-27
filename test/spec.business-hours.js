@@ -1,4 +1,5 @@
 var moment = require('../lib/business-hours');
+var localeData = require('../locale/default');
 
 describe('moment.business-hours', function () {
 
@@ -8,6 +9,14 @@ describe('moment.business-hours', function () {
     var date = 'YYYY-MM-DD',
         time = 'HH:mm:ss.SSS',
         full = date + ' ' + time;
+
+    beforeEach(function () {
+        moment.locale('en');
+    });
+
+    afterEach(function () {
+        moment.locale('en', localeData);
+    });
 
 
     describe('isWorkingDay', function () {
@@ -290,17 +299,6 @@ describe('moment.business-hours', function () {
 
     describe('modified locales', function () {
 
-        beforeEach(function () {
-            moment.locale('en');
-        });
-
-        afterEach(function () {
-            localeData = require('../locale/default');
-            moment.locale(moment.locale(), {
-                workinghours: localeData.HOURS
-            });
-        });
-
         it('handles inconsistent opening hours', function () {
             moment.locale('en', {
                 workinghours: {
@@ -420,6 +418,47 @@ describe('moment.business-hours', function () {
             from.workingDiff(to, 'hours', true).should.equal(-22.5);
             to.workingDiff(from, 'hours').should.equal(22);
             to.workingDiff(from, 'hours', true).should.equal(22.5);
+        });
+
+    });
+
+    describe('holidays', function () {
+
+        beforeEach(function () {
+            moment.locale('en');
+            moment.locale('en', {
+                holidays: [
+                    '2015-02-27',
+                    '*-12-25'
+                ]
+            });
+        });
+
+        afterEach(function () {
+            moment.locale('en', {
+                holidays: []
+            });
+        });
+
+        it('does not count holidays as working days', function () {
+            moment('2015-02-27').isWorkingDay().should.be.false;
+        });
+
+        it('does not include holidays when adding working time', function () {
+            moment('2015-02-26').addWorkingTime(3, 'days').format(date).should.equal('2015-03-04');
+            moment('2015-02-26T12:00:00Z').addWorkingTime(8, 'hours').format(full).should.equal('2015-03-02 12:00:00.000');
+        });
+
+        it('does not include holidays when adding calculating diffs', function () {
+            moment('2015-03-02T12:00:00Z').workingDiff('2015-02-26T12:00:00Z', 'hours').should.equal(8);
+        });
+
+        it('supports holidays as wildcards', function () {
+            moment('2015-12-25').isWorkingDay().should.be.false;
+            moment('2016-12-25').isWorkingDay().should.be.false;
+            moment('2017-12-25').isWorkingDay().should.be.false;
+            moment('2018-12-25').isWorkingDay().should.be.false;
+            moment('2019-12-25').isWorkingDay().should.be.false;
         });
 
     });
