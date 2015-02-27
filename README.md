@@ -16,3 +16,8 @@ npm install [--save] moment-business-time
 * `moment#nextWorkingTime`
 * `moment#addWorkingTime`
 
+## Running tests
+
+```
+npm test
+```
