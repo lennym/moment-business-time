@@ -121,6 +121,29 @@ moment('2015-02-27T16:00:00Z').subtractWorkingTime(5, 'hours', 30, 'minutes');
 
 ```
 
+## Configuration
+
+The working hours used for a locale can be modified using moment's `locale` method.
+
+Example:
+
+```javascript
+// set opening time to 09:30 and close early on Wednesdays
+moment.locale('en', {
+    workinghours: {
+        0: null,
+        1: ['09:30:00', '17:00:00'],
+        2: ['09:30:00', '17:00:00'],
+        3: ['09:30:00', '13:00:00'],
+        4: ['09:30:00', '17:00:00'],
+        5: ['09:30:00', '17:00:00'],
+        6: null
+    }
+});
+moment('Wed Feb 25 2015 15:00:00 GMT+0000').isWorkingTime() // false
+moment('Mon Feb 23 2015 09:00:00 GMT+0000').isWorkingTime() // false
+```
+
 ## Running tests
 
 ```

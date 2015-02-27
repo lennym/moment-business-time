@@ -288,4 +288,76 @@ describe('moment.business-hours', function () {
 
     });
 
+    describe('modified locales', function () {
+
+        beforeEach(function () {
+            moment.locale('en');
+        });
+
+        afterEach(function () {
+            localeData = require('../locale/default');
+            moment.locale(moment.locale(), {
+                workinghours: localeData.HOURS
+            });
+        });
+
+        it('handles inconsistent opening hours', function () {
+            moment.locale('en', {
+                workinghours: {
+                    0: null,
+                    1: ['12:00:00', '17:00:00'],
+                    2: ['09:30:00', '17:00:00'],
+                    3: ['10:00:00', '17:00:00'],
+                    4: ['09:00:00', '17:00:00'],
+                    5: ['09:30:00', '17:00:00'],
+                    6: null
+                }
+            });
+            var mondayMorning = moment('2015-02-23T10:00:00');
+            mondayMorning.isWorkingTime().should.be.false;
+            mondayMorning.clone().addWorkingTime(2, 'hours').format(full).should.equal('2015-02-23 14:00:00.000');
+            mondayMorning.clone().addWorkingTime(15, 'hours').format(full).should.equal('2015-02-25 12:30:00.000');
+        });
+
+        it('handles inconsistent closing hours', function () {
+            moment.locale('en', {
+                workinghours:  {
+                    0: null,
+                    1: ['09:30:00', '17:00:00'],
+                    2: ['09:30:00', '17:00:00'],
+                    3: ['09:30:00', '13:00:00'],
+                    4: ['09:30:00', '17:00:00'],
+                    5: ['09:30:00', '17:00:00'],
+                    6: null
+                }
+            });
+            var wednesdayAfternoon = moment('2015-02-25T16:00:00');
+            wednesdayAfternoon.isWorkingTime().should.be.false;
+            wednesdayAfternoon.clone().addWorkingTime(2, 'hours').format(full).should.equal('2015-02-26 11:30:00.000');
+            wednesdayAfternoon.clone().subtractWorkingTime(8, 'hours').format(full).should.equal('2015-02-24 12:30:00.000');
+        });
+
+        it('handles different working days', function () {
+            moment.locale('en', {
+                workinghours: {
+                    0: ['09:30:00', '17:00:00'],
+                    1: ['09:30:00', '17:00:00'],
+                    2: ['09:30:00', '17:00:00'],
+                    3: ['09:30:00', '17:00:00'],
+                    4: ['09:30:00', '17:00:00'],
+                    5: null,
+                    6: null
+                }
+            });
+            var fridayAfternoon = moment('2015-02-27T16:00:00'),
+                sundayMorning = moment('2015-03-01T10:00:00');
+            fridayAfternoon.isWorkingTime().should.be.false;
+            fridayAfternoon.isWorkingDay().should.be.false;
+            sundayMorning.isWorkingTime().should.be.true;
+            sundayMorning.isWorkingDay().should.be.true;
+            sundayMorning.lastWorkingDay().format(date).should.equal('2015-02-26'); //thursday
+        });
+
+    });
+
 });
