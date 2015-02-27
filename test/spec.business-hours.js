@@ -120,6 +120,10 @@ describe('moment.business-hours', function () {
                 moment('2015-02-26T16:59:59.700').addWorkingTime(45, 'minutes').format(full).should.equal('2015-02-27 09:44:59.700');
             });
 
+            it('can support values greater than 60', function () {
+                moment(now).addWorkingTime(600, 'minutes').format(full).should.equal('2015-02-27 12:12:34.000');
+            });
+
         });
 
         describe('adding seconds', function () {
@@ -134,6 +138,10 @@ describe('moment.business-hours', function () {
 
             it('runs over to next day if insufficient space in current day', function () {
                 moment('2015-02-26T16:59:59.700').addWorkingTime(45, 'seconds').format(full).should.equal('2015-02-27 09:00:44.700');
+            });
+
+            it('can support values greater than 60', function () {
+                moment(now).addWorkingTime(600, 'seconds').format(full).should.equal('2015-02-26 10:22:34.000');
             });
 
         });
