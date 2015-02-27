@@ -360,4 +360,52 @@ describe('moment.business-hours', function () {
 
     });
 
+    describe('workingDiff', function () {
+
+        it('calculates the basic diff if the two times are on the same working day', function () {
+            var from = moment('2015-02-27T10:00:00'),
+                to = moment('2015-02-27T13:30:00');
+
+            from.workingDiff(to, 'hours').should.equal(-3);
+            from.workingDiff(to, 'hours', true).should.equal(-3.5);
+            to.workingDiff(from, 'hours', true).should.equal(3.5);
+            to.workingDiff(from, 'hours').should.equal(3);
+
+            from.workingDiff(to, 'minutes').should.equal(-210);
+            to.workingDiff(from, 'minutes').should.equal(210);
+        });
+
+        it('calculates the diff of only the working hours if two times are on different days', function () {
+            var from = moment('2015-02-27T10:00:00'),
+                to = moment('2015-03-02T13:30:00');
+
+            from.workingDiff(to, 'hours').should.equal(-11);
+            to.workingDiff(from, 'hours').should.equal(11);
+            from.workingDiff(to, 'hours', true).should.equal(-11.5);
+            to.workingDiff(from, 'hours', true).should.equal(11.5);
+        });
+
+        it('handles inconsistent closing hours', function () {
+            moment.locale('en', {
+                workinghours:  {
+                    0: null,
+                    1: ['09:30:00', '17:00:00'],
+                    2: ['09:30:00', '17:00:00'],
+                    3: ['09:30:00', '13:00:00'],
+                    4: ['09:30:00', '17:00:00'],
+                    5: ['09:30:00', '17:00:00'],
+                    6: null
+                }
+            });
+            var from = moment('2015-02-23T10:00:00'),
+                to = moment('2015-02-26T14:00:00');
+
+            from.workingDiff(to, 'hours').should.equal(-22);
+            from.workingDiff(to, 'hours', true).should.equal(-22.5);
+            to.workingDiff(from, 'hours').should.equal(22);
+            to.workingDiff(from, 'hours', true).should.equal(22.5);
+        });
+
+    });
+
 });
