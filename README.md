@@ -14,7 +14,10 @@ npm install [--save] moment-business-time
 * `moment#isWorkingTime`
 * `moment#nextWorkingDay`
 * `moment#nextWorkingTime`
+* `moment#lastWorkingDay`
+* `moment#lastWorkingTime`
 * `moment#addWorkingTime`
+* `moment#subtractWorkingTime`
 
 ## Running tests
 
