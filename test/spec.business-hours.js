@@ -79,6 +79,7 @@ describe('moment.business-hours', function () {
             it('adds working days onto date', function () {
                 moment(now).addWorkingTime(2, 'days').format(date).should.equal('2015-03-02');
                 moment(now).addWorkingTime(10, 'days').format(date).should.equal('2015-03-12');
+                moment(now).addWorkingTime(100, 'days').format(date).should.equal('2015-07-16');
             });
 
             it('handles singular as well as plural units', function () {
@@ -112,6 +113,11 @@ describe('moment.business-hours', function () {
             it('handles running over multiple nights', function () {
                 moment(now).addWorkingTime(19, 'hours').format(full).should.equal('2015-03-02 13:12:34.000');
             });
+
+            it('handles running over multiple weeks', function () {
+                moment(now).addWorkingTime(108, 'hours').format(full).should.equal('2015-03-17 14:12:34.000');
+            });
+
 
         });
 
