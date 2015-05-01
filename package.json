@@ -1,6 +1,6 @@
 {
   "name": "moment-business-time",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Query and manipulate moment objects within the context of business/working hours",
   "main": "index.js",
   "scripts": {
