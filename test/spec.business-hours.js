@@ -387,8 +387,8 @@ describe('moment.business-hours', function () {
             var from = moment('2015-02-27T10:00:00'),
                 to = moment('2015-03-20T13:30:00');
 
-            from.workingDiff(to, 'days').should.equal(16);
-            to.workingDiff(from, 'days').should.equal(-16);
+            from.workingDiff(to, 'days').should.equal(-16);
+            to.workingDiff(from, 'days').should.equal(16);
         });
 
         it('handles units that don\'t really makes sense for business opening times by deferring to moment', function () {
