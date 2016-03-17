@@ -3,6 +3,7 @@
   "version": "0.4.0",
   "description": "Query and manipulate moment objects within the context of business/working hours",
   "main": "index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "test": "mocha test/. --require test/init.js"
   },
