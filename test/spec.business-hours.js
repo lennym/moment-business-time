@@ -399,8 +399,17 @@ describe('moment.business-hours', function () {
             var from = moment('2015-02-27T10:00:00'),
                 to = moment('2015-03-20T13:30:00');
 
-            from.workingDiff(to, 'days').should.equal(-16);
-            to.workingDiff(from, 'days').should.equal(16);
+            from.workingDiff(to, 'days').should.equal(-15);
+            to.workingDiff(from, 'days').should.equal(15);
+
+            moment('2015-02-27T15:00:00').workingDiff(moment('2015-02-27T10:00:00'), 'day').should.equal(0);
+            moment('2015-02-27T15:00:00').workingDiff(moment('2015-02-27T10:00:00'), 'day', true).should.equal(0.625);
+            moment('2015-02-27T15:00:00').workingDiff(moment('2015-02-26T10:00:00'), 'day').should.equal(1)
+            moment('2015-02-27T15:00:00').workingDiff(moment('2015-02-26T10:00:00'), 'day', true).should.equal(1.625);
+
+            moment('2015-02-27T15:00:00').workingDiff(moment('2015-02-21T10:00:00'), 'day', true).should.equal(4.75);
+            moment('2015-02-21T10:00:00').workingDiff(moment('2015-02-27T15:00:00'), 'day', true).should.equal(-4.75);
+
         });
 
         it('handles units that don\'t really makes sense for business opening times by deferring to moment', function () {
