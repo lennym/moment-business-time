@@ -441,6 +441,10 @@ describe('moment.business-hours', function () {
             to.workingDiff(from, 'hours', true).should.equal(22.5);
         });
 
+        it('returns zero for times on the same night over consecutive days', function () {
+            moment('2016-10-16T18:00:00+00:00').workingDiff('2016-10-17T06:00:00+00:00', 'hours').should.equal(0);
+        });
+
     });
 
     describe('holidays', function () {
