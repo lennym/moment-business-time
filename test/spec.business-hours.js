@@ -445,6 +445,37 @@ describe('moment.business-hours', function () {
             moment('2016-10-16T18:00:00+00:00').workingDiff('2016-10-17T06:00:00+00:00', 'hours').should.equal(0);
         });
 
+        it('returns proper hours throughout the day for times in business and non-business hours', function () {
+            moment.locale('en', {
+                workinghours:  {
+                    0: null,
+                    1: ['06:00:00', '18:00:00'],
+                    2: ['06:00:00', '18:00:00'],
+                    3: ['06:00:00', '18:00:00'],
+                    4: ['06:00:00', '18:00:00'],
+                    5: ['06:00:00', '18:00:00'],
+                    6: null
+                }
+            });
+
+            // In the morning
+            moment('2016-10-16T03:00:00').workingDiff('2016-10-16T06:00:00').should.equal(0);
+            moment('2016-10-16T03:00:00').workingDiff('2016-10-16T07:00:00').should.equal(1);
+            moment('2016-10-16T03:00:00').workingDiff('2016-10-16T08:00:00').should.equal(2);
+            moment('2016-10-16T03:00:00').workingDiff('2016-10-16T09:00:00').should.equal(3);
+            moment('2016-10-16T03:00:00').workingDiff('2016-10-16T10:00:00').should.equal(4);
+
+            // Early Afternoon
+            moment('2016-10-16T03:00:00').workingDiff('2016-10-16T13:00:00').should.equal(7);
+
+            // End of Business hours
+            moment('2016-10-16T03:00:00').workingDiff('2016-10-16T17:00:00').should.equal(11);
+            moment('2016-10-16T03:00:00').workingDiff('2016-10-16T18:00:00').should.equal(12);
+
+            // Past business hours
+            moment('2016-10-16T03:00:00').workingDiff('2016-10-16T23:00:00').should.equal(12);
+        });
+
     });
 
     describe('holidays', function () {
