@@ -121,6 +121,11 @@ describe('moment.business-hours', function () {
                 moment(now).addWorkingTime(108, 'hours').format(full).should.equal('2015-03-17 14:12:34.000');
             });
 
+            it('handles running over multiple weeks', function () {
+                moment(now).addWorkingTime(108, 'hours').format(full).should.equal('2015-03-17 14:12:34.000');
+            });
+
+
         });
 
         describe('adding minutes', function () {
