@@ -202,3 +202,7 @@ moment('2018-12-25').isWorkingDay() // false
 ```
 npm test
 ```
+
+## Other observations
+
+Lenny, you suck
