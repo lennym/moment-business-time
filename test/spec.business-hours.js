@@ -41,6 +41,23 @@ describe('moment.business-hours', function () {
             moment(now).isWorkingTime().should.be.true;
         });
 
+        it('considers working time inclusive', function(){
+                moment.locale('en', {
+                    workinghours: {
+                        0: null,
+                        1: ['09:00:00', '17:00:00'],
+                        2: ['09:00:00', '17:00:00'],
+                        3: ['09:00:00', '17:00:00'],
+                        4: ['09:00:00', '17:00:00'],
+                        5: ['09:00:00', '17:00:00'],
+                        6: null
+                    }
+                });
+
+             moment('2017-06-26 9:00:00').isWorkingTime().should.be.true;
+             moment('2017-06-26 17:00:00').isWorkingTime().should.be.true;
+        });
+
     });
 
     describe('nextWorkingDay', function () {
@@ -89,6 +106,14 @@ describe('moment.business-hours', function () {
             it('if called on a non-business day then starts from the first business day', function () {
                 moment(weekend).addWorkingTime(1, 'day').format(date).should.equal('2015-03-02');
             });
+
+            it('can add negative days', function(){
+                moment(now).addWorkingTime(-1, 'day').format(date).should.equal('2015-02-25');
+            });
+
+            
+
+
 
         });
 
@@ -213,6 +238,10 @@ describe('moment.business-hours', function () {
 
             it('if called on a non-business day then starts from the first business day', function () {
                 moment(weekend).subtractWorkingTime(1, 'day').format(date).should.equal('2015-02-27');
+            });
+
+            it('can subtract negative days', function(){
+                moment(now).subtractWorkingTime(-2, 'day').format(date).should.equal('2015-03-02');
             });
 
         });
