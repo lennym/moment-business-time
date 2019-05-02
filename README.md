@@ -2,6 +2,8 @@
 
 Query and manipulate moment objects within the scope of business/working hours.
 
+![It's Business Time](https://media.giphy.com/media/h45algtniCWEo/giphy.gif)
+
 ## Install
 
 ```
