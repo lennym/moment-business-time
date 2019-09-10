@@ -58,6 +58,27 @@ describe('moment.business-hours', function () {
              moment('2017-06-26 17:00:00').isWorkingTime().should.be.true;
         });
 
+        it('considers multiple working times', function(){
+            moment.locale('en', {
+                workinghours: {
+                    0: null,
+                    1: ['09:00:00', '17:00:00', '18:00:00', '23:00:00'],
+                    2: ['09:00:00', '17:00:00', '18:00:00', '23:00:00'],
+                    3: ['09:00:00', '17:00:00', '18:00:00', '23:00:00'],
+                    4: ['09:00:00', '17:00:00', '18:00:00', '23:00:00'],
+                    5: ['09:00:00', '17:00:00', '18:00:00', '23:00:00'],
+                    6: null
+                }
+            });
+
+            moment('2017-06-26 16:45:00').isWorkingTime().should.be.true;
+            moment('2017-06-26 17:00:00').isWorkingTime().should.be.true;
+            moment('2017-06-26 17:15:00').isWorkingTime().should.be.false;
+            moment('2017-06-26 17:45:00').isWorkingTime().should.be.false;
+            moment('2017-06-26 18:00:00').isWorkingTime().should.be.true;
+            moment('2017-06-26 18:15:00').isWorkingTime().should.be.true;
+        });
+
     });
 
     describe('nextWorkingDay', function () {
