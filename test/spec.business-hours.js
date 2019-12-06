@@ -183,7 +183,7 @@ describe('moment.business-hours', function () {
             });
 
             it('doesn\'t break on leap years', function () {
-                moment('2020-01-06T13:00:00.000z').addWorkingTime(1, 'seconds').format(full).should.equal('2020-01-06 13:00:01.000');
+                moment('2020-01-06T13:00:00.000Z').addWorkingTime(1, 'seconds').format(full).should.equal('2020-01-06 13:00:01.000');
             });
 
         });
