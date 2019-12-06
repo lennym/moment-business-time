@@ -42,20 +42,20 @@ describe('moment.business-hours', function () {
         });
 
         it('considers working time inclusive', function(){
-                moment.locale('en', {
-                    workinghours: {
-                        0: null,
-                        1: ['09:00:00', '17:00:00'],
-                        2: ['09:00:00', '17:00:00'],
-                        3: ['09:00:00', '17:00:00'],
-                        4: ['09:00:00', '17:00:00'],
-                        5: ['09:00:00', '17:00:00'],
-                        6: null
-                    }
-                });
+            moment.locale('en', {
+                workinghours: {
+                    0: null,
+                    1: ['09:00:00', '17:00:00'],
+                    2: ['09:00:00', '17:00:00'],
+                    3: ['09:00:00', '17:00:00'],
+                    4: ['09:00:00', '17:00:00'],
+                    5: ['09:00:00', '17:00:00'],
+                    6: null
+                }
+            });
 
-             moment('2017-06-26 9:00:00').isWorkingTime().should.be.true;
-             moment('2017-06-26 17:00:00').isWorkingTime().should.be.true;
+            moment('2017-06-26T09:00:00.000').isWorkingTime().should.be.true;
+            moment('2017-06-26T17:00:00.000').isWorkingTime().should.be.true;
         });
 
     });
@@ -110,10 +110,6 @@ describe('moment.business-hours', function () {
             it('can add negative days', function(){
                 moment(now).addWorkingTime(-1, 'day').format(date).should.equal('2015-02-25');
             });
-
-            
-
-
 
         });
 
@@ -184,6 +180,10 @@ describe('moment.business-hours', function () {
 
             it('can support values greater than 60', function () {
                 moment(now).addWorkingTime(600, 'seconds').format(full).should.equal('2015-02-26 10:22:34.000');
+            });
+
+            it('doesn\'t break on leap years', function () {
+                moment('2020-01-06T13:00:00.000z').addWorkingTime(1, 'seconds').format(full).should.equal('2020-01-06 13:00:01.000');
             });
 
         });
