@@ -153,13 +153,14 @@ Example:
 
 ```javascript
 // set opening time to 09:30 and close early on Wednesdays
+// close for a one hour lunch break on Thursdays
 moment.locale('en', {
     workinghours: {
         0: null,
         1: ['09:30:00', '17:00:00'],
         2: ['09:30:00', '17:00:00'],
         3: ['09:30:00', '13:00:00'],
-        4: ['09:30:00', '17:00:00'],
+        4: ['09:30:00', '12:00:00', '13:00:00', '17:00:00'],
         5: ['09:30:00', '17:00:00'],
         6: null
     }

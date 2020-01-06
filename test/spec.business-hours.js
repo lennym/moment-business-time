@@ -58,6 +58,24 @@ describe('moment.business-hours', function () {
             moment('2017-06-26T17:00:00.000').isWorkingTime().should.be.true;
         });
 
+        it('considers multiple opening times per day', function(){
+            moment.locale('en', {
+                workinghours: {
+                    0: null,
+                    1: ['09:00:00', '12:00:00', '13:00:00', '17:00:00'],
+                    2: ['09:00:00', '17:00:00'],
+                    3: ['09:00:00', '17:00:00'],
+                    4: ['09:00:00', '17:00:00'],
+                    5: ['09:00:00', '17:00:00'],
+                    6: null
+                }
+            });
+
+            moment('2017-06-26T10:00:00.000').isWorkingTime().should.be.true;
+            moment('2017-06-26T12:30:00.000').isWorkingTime().should.be.false;
+            moment('2017-06-26T16:00:00.000').isWorkingTime().should.be.true;
+        });
+
     });
 
     describe('nextWorkingDay', function () {
@@ -142,6 +160,24 @@ describe('moment.business-hours', function () {
                 moment(now).addWorkingTime(108, 'hours').format(full).should.equal('2015-03-17 14:12:34.000');
             });
 
+            it('handles working times with breaks', function() {
+                moment.locale('en', {
+                    workinghours: {
+                        0: null,
+                        1: ['09:00:00', '17:00:00'],
+                        2: ['09:00:00', '17:00:00'],
+                        3: ['09:00:00', '17:00:00'],
+                        4: ['09:00:00', '12:00:00', '13:00:00', '18:00:00'],
+                        5: ['09:00:00', '12:00:00', '12:30:00', '17:00:00'],
+                        6: null
+                    }
+                });
+                moment('2020-01-02T10:00:00').addWorkingTime(4, 'hour').format(full).should.equal('2020-01-02 15:00:00.000');
+                moment('2020-01-03T11:00:00').addWorkingTime(2, 'hour').format(full).should.equal('2020-01-03 13:30:00.000');
+                moment('2020-01-02T10:00:00').addWorkingTime(16, 'hour').format(full).should.equal('2020-01-06 10:30:00.000');
+                moment('2020-01-02T12:30:00').addWorkingTime(2, 'hour').format(full).should.equal('2020-01-02 15:00:00.000');
+                moment('2020-01-03T11:30:00').addWorkingTime(1, 'hour').format(full).should.equal('2020-01-03 13:00:00.000');
+            });
         });
 
         describe('adding minutes', function () {
@@ -183,7 +219,7 @@ describe('moment.business-hours', function () {
             });
 
             it('doesn\'t break on leap years', function () {
-                moment('2020-01-06T13:00:00.000Z').addWorkingTime(1, 'seconds').format(full).should.equal('2020-01-06 13:00:01.000');
+                moment.utc('2020-01-06T13:00:00.000Z').addWorkingTime(1, 'seconds').format(full).should.equal('2020-01-06 13:00:01.000');
             });
 
         });
@@ -272,6 +308,24 @@ describe('moment.business-hours', function () {
                 moment(now).subtractWorkingTime(108, 'hours').format(full).should.equal('2015-02-09 12:12:34.000');
             });
 
+            it('handles working times with breaks', function() {
+                moment.locale('en', {
+                    workinghours: {
+                        0: null,
+                        1: ['09:00:00', '17:00:00'],
+                        2: ['09:00:00', '17:00:00'],
+                        3: ['09:00:00', '17:00:00'],
+                        4: ['09:00:00', '12:00:00', '13:00:00', '18:00:00'],
+                        5: ['09:00:00', '12:00:00', '12:30:00', '17:00:00'],
+                        6: null
+                    }
+                });
+                moment('2020-01-02T15:00:00').subtractWorkingTime(4, 'hour').format(full).should.equal('2020-01-02 10:00:00.000');
+                moment('2020-01-03T13:30:00').subtractWorkingTime(2, 'hour').format(full).should.equal('2020-01-03 11:00:00.000');
+                moment('2020-01-06T10:30:00').subtractWorkingTime(16, 'hour').format(full).should.equal('2020-01-02 10:00:00.000');
+                moment('2020-01-02T15:00:00').subtractWorkingTime(2, 'hour').format(full).should.equal('2020-01-02 13:00:00.000');
+                moment('2020-01-03T13:00:00').subtractWorkingTime(1, 'hour').format(full).should.equal('2020-01-03 11:30:00.000');
+            });
         });
 
         describe('subtracting minutes', function () {
@@ -424,6 +478,27 @@ describe('moment.business-hours', function () {
             to.workingDiff(from, 'hours', true).should.equal(11.5);
         });
 
+        it('calculates the diff of working hours while respecting breaks', function() {
+            moment.locale('en', {
+                workinghours: {
+                    0: null,
+                    1: ['09:00:00', '17:00:00'],
+                    2: ['09:00:00', '17:00:00'],
+                    3: ['09:00:00', '17:00:00'],
+                    4: ['09:00:00', '12:00:00', '13:00:00', '18:00:00'],
+                    5: ['09:00:00', '12:00:00', '12:30:00', '17:00:00'],
+                    6: null
+                }
+            });
+
+            moment('2020-01-02T15:00:00').workingDiff('2020-01-02T10:00:00', 'hour').should.equal(4);
+            moment('2020-01-03T13:30:00').workingDiff('2020-01-03T11:00:00', 'hour').should.equal(2);
+            moment('2020-01-06T10:00:00').workingDiff('2020-01-02T10:00:00', 'hour').should.equal(15);
+            moment('2020-01-06T10:00:00').workingDiff('2020-01-02T10:00:00', 'hour', true).should.equal(15.5);
+            moment('2020-01-02T15:00:00').workingDiff('2020-01-02T12:30:00', 'hour').should.equal(2);
+            moment('2020-01-03T13:00:00').workingDiff('2020-01-03T11:30:00', 'hour').should.equal(1);
+        })
+
         it('calculates the difference between dates in working days', function () {
             var from = moment('2015-02-27T10:00:00'),
                 to = moment('2015-03-20T13:30:00');
@@ -500,7 +575,7 @@ describe('moment.business-hours', function () {
 
         it('does not include holidays when adding working time', function () {
             moment('2015-02-26').addWorkingTime(3, 'days').format(date).should.equal('2015-03-04');
-            moment('2015-02-26T12:00:00Z').addWorkingTime(8, 'hours').format(full).should.equal('2015-03-02 12:00:00.000');
+            moment.utc('2015-02-26T12:00:00Z').addWorkingTime(8, 'hours').format(full).should.equal('2015-03-02 12:00:00.000');
         });
 
         it('does not include holidays when adding calculating diffs', function () {
