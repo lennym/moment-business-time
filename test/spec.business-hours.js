@@ -107,6 +107,81 @@ describe('moment.business-hours', function () {
 
     });
 
+    describe('nextTransitionTime', function () {
+
+        it('returns the start of the next working period if not a current working period', function () {
+            let res = moment(weekend).nextTransitionTime();
+            res.moment.format(full).should.equal('2015-03-02 09:00:00.000');
+            res.transition.should.equal('open');
+        });
+
+        it('returns the start of the next working day if called after closing time on a working day', function () {
+            let res = moment('2015-02-26T17:30:00').nextTransitionTime();
+            res.moment.format(full).should.equal('2015-02-27 09:00:00.000');
+            res.transition.should.equal('open')
+        });
+
+        it('returns the start of the next working period if called before opening time on a working day', function () {
+            let res = moment('2015-02-26T08:30:00').nextTransitionTime();
+            res.moment.format(full).should.equal('2015-02-26 09:00:00.000');
+            res.transition.should.equal('open')
+        });
+
+        it('returns the end of the current working period if called during working period', function () {
+            let res = moment('2015-02-26T13:30:00').nextTransitionTime();
+            res.moment.format(full).should.equal('2015-02-26 17:00:00.000');
+            res.transition.should.equal('close');
+        });
+    });
+
+    describe('lastWorkingTime', function () {
+
+        it('returns the end of the last working day if not a current working day', function () {
+            moment(weekend).lastWorkingTime().format(full).should.equal('2015-02-27 17:00:00.000');
+        });
+
+        it('returns the end of the current working day if called after closing time on a working day', function () {
+            moment('2015-02-26T17:30:00').lastWorkingTime().format(full).should.equal('2015-02-26 17:00:00.000');
+        });
+
+        it('returns the end of the previous working day if called before opening time on a working day', function () {
+            moment('2015-02-26T07:30:00').lastWorkingTime().format(full).should.equal('2015-02-25 17:00:00.000');
+        });
+
+        it('returns the current time and date if called during opening hours', function () {
+            moment(now).lastWorkingTime().format(full).should.equal('2015-02-26 10:12:34.000');
+        });
+
+    });
+
+    describe('lastTransitionTime', function () {
+
+        it('returns the end of the last working day if not a current working day', function () {
+            let res = moment(weekend).lastTransitionTime();
+            res.moment.format(full).should.equal('2015-02-27 17:00:00.000');
+            res.transition.should.equal('close')
+        });
+
+        it('returns the end of the current working day if called after closing time on a working day', function () {
+            let res = moment('2015-02-26T17:30:00').lastTransitionTime();
+            res.moment.format(full).should.equal('2015-02-26 17:00:00.000');
+            res.transition.should.equal('close')
+        });
+
+        it('returns the end of the previous working day if called before opening time on a working day', function () {
+            let res = moment('2015-02-26T07:30:00').lastTransitionTime();
+            res.moment.format(full).should.equal('2015-02-25 17:00:00.000');
+            res.transition.should.equal('close')
+        });
+
+        it('returns the start of the current working period if called during opening hours', function () {
+            let res = moment(now).lastTransitionTime();
+            res.moment.format(full).should.equal('2015-02-26 09:00:00.000');
+            res.transition.should.equal('open')
+        });
+
+    });
+
     describe('addWorkingTime', function () {
 
         describe('adding days', function () {
