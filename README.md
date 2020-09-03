@@ -67,6 +67,26 @@ moment('2015-02-28T20:00:00Z').nextWorkingTime();
 // Mon Mar 02 2015 09:00:00 GMT+0000
 ```
 
+### `moment#nextTransitionTime`
+
+Returns: `object`
+
+Returns a new object with moment and transition properties representing the next moment when the business will transition between 'open' and 'closed' states.
+
+#### Example:
+```javascript
+moment('2015-02-26T17:30:00').nextTransitionTime();
+// {
+//   'moment': Fri Feb 27 2015 09:00:00 GMT+0000
+//   'transition': 'open'
+// }
+moment('2015-02-26T13:30:00').nextTransitionTime();
+// {
+//   'moment': Thu Feb 26 2015 17:00:00 GMT+0000
+//   'transition': 'close'
+// }
+```
+
 ### `moment#lastWorkingDay`
 
 Returns: `moment`
@@ -93,6 +113,26 @@ moment('2015-02-28T10:00:00Z').lastWorkingTime();
 // Fri Feb 27 2015 17:00:00 GMT+0000
 moment('2015-02-28T20:00:00Z').lastWorkingTime();
 // Fri Feb 27 2015 17:00:00 GMT+0000
+```
+
+### `moment#lastTransitionTime`
+
+Returns: `object`
+
+Returns a new object with moment and transition properties representing the most recent moment when the business transitioned between 'open' and 'closed' states.
+
+#### Example:
+```javascript
+moment('2015-02-26T17:30:00').lastTransitionTime();
+// {
+//   'moment': Thu Feb 26 2015 17:00:00 GMT+0000
+//   'transition': 'close'
+// }
+moment('2015-02-26T10:12:34').lastTransitionTime();
+// {
+//   'moment': Thu Feb 26 2015 09:00:00 GMT+0000 
+//   'transition': 'open'
+// }
 ```
 
 ### `moment#addWorkingTime`
