@@ -2,7 +2,8 @@ var moment = require('../lib/business-hours');
 var localeData = require('../locale/default');
 
 const randomDate = () => {
-    return moment(1e12 + Math.floor(Math.random() * 1e12));
+    // get a random date in Q3/4 2017
+    return moment(1.5e12 + Math.floor(Math.random() * 1e10));
 }
 
 describe('moment.business-hours', function () {
@@ -844,6 +845,30 @@ describe('moment.business-hours', function () {
                     i++;
                 }
             });
+
+            it('equivalence to .diff if all days are working days', () => {
+                moment.locale('en');
+                moment.locale('en', {
+                    workinghours: {
+                        0: ['09:00:00', '17:00:00'],
+                        1: ['09:00:00', '17:00:00'],
+                        2: ['09:00:00', '17:00:00'],
+                        3: ['09:00:00', '17:00:00'],
+                        4: ['09:00:00', '17:00:00'],
+                        5: ['09:00:00', '17:00:00'],
+                        6: ['09:00:00', '17:00:00']
+                    },
+                    holidays: []
+                });
+
+                let i = 0;
+                while (i < 20) {
+                    const a = randomDate().startOf('day');
+                    const b = randomDate().startOf('day');
+                    a.workingDiff(b, 'calendarDays').should.equal(a.diff(b, 'days'));
+                    i++;
+                }
+            })
 
         });
 
