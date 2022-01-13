@@ -183,6 +183,43 @@ moment('2015-02-27T16:30:00Z').workingDiff(moment('2015-02-26T12:00:00Z'), 'hour
 // 12.5
 ```
 
+#### Note on `day` in `workingDiff`
+
+When `workingDiff` passed a unit of `days` it will use the times provided to calculate the number of _complete_ working days based on the working hours specified in the locale (default `09:00-17:00, Mon-Fri`). This means that a diff of 1 day can be returned for values on the same day if the timestamps fully contain the day's working hours.
+
+Examples:
+
+```javascript
+moment('2022-01-11T09:30:00Z').workingDiff(moment('2022-01-10T10:00:00Z'), 'days');
+// 0
+moment('2022-01-11T10:30:00Z').workingDiff(moment('2022-01-10T10:00:00Z'), 'days');
+// 1
+moment('2022-01-11T16:00:00Z').workingDiff(moment('2022-01-10T08:00:00Z'), 'days');
+// 1
+moment('2022-01-11T18:00:00Z').workingDiff(moment('2022-01-10T08:00:00Z'), 'days');
+// 2
+moment('2022-01-12T18:00:00Z').workingDiff(moment('2022-01-10T08:00:00Z'), 'days');
+// 3
+```
+
+Alternatively, if you wish to disregard the time of day consider only the calendar days, then a unit of `calendarDays` can be passed. For periods that do not contain any non-working days this is equivalent to `moment#diff(..., 'days')`.
+
+Examples:
+
+```javascript
+moment('2022-01-11T09:30:00Z').workingDiff(moment('2022-01-10T10:00:00Z'), 'days');
+// 1
+moment('2022-01-11T10:30:00Z').workingDiff(moment('2022-01-10T10:00:00Z'), 'days');
+// 1
+moment('2022-01-11T16:00:00Z').workingDiff(moment('2022-01-10T08:00:00Z'), 'days');
+// 1
+moment('2022-01-11T18:00:00Z').workingDiff(moment('2022-01-10T08:00:00Z'), 'days');
+// 1
+moment('2022-01-12T18:00:00Z').workingDiff(moment('2022-01-10T08:00:00Z'), 'days');
+// 2
+```
+
+
 ## Configuration
 
 ### Working hours

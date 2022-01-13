@@ -4,7 +4,7 @@
   "description": "Query and manipulate moment objects within the context of business/working hours",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/. --require test/init.js"
+    "test": "mocha test/. --require test/init.js --timeout 10000"
   },
   "repository": {
     "type": "git",
