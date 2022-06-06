@@ -913,6 +913,23 @@ describe('moment.business-hours', function () {
             moment('2019-12-25').isWorkingDay().should.be.false;
         });
 
+        it('supports holidays as functions', function () {
+            moment.locale('en');
+            moment.locale('en', {
+                holidays: [
+                    function(d) {
+                      return d.month() === 4 &&
+                        d.day() === 0 &&
+                        d.week() === (d.clone().startOf('month').week() + 1)
+                    },
+                    '2015-02-27',
+                    '*-12-25'
+                ]
+            });
+            moment('2021-05-08').isHoliday().should.be.false;
+            moment('2022-05-08').isHoliday().should.be.true;
+        });
+
     });
 
 });
