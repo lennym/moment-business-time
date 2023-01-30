@@ -1,6 +1,11 @@
 var moment = require('../lib/business-hours');
 var localeData = require('../locale/default');
 
+const randomDate = () => {
+    // get a random date in Q3/4 2017
+    return moment(1.5e12 + Math.floor(Math.random() * 1e10));
+}
+
 describe('moment.business-hours', function () {
 
     var now = '2015-02-26T10:12:34',
@@ -622,6 +627,249 @@ describe('moment.business-hours', function () {
 
         it('returns zero for times on the same night over consecutive days', function () {
             moment('2016-10-16T18:00:00+00:00').workingDiff('2016-10-17T06:00:00+00:00', 'hours').should.equal(0);
+        });
+
+        describe('days', () => {
+
+            it('if the start time is before business hours', () => {
+                const start  = moment('2021-11-22T08:00:00'); // Monday morning
+
+                // same day, during the day
+                moment('2021-11-22T16:00:00').workingDiff(start, 'days').should.equal(0);
+                // same day, after close of business
+                moment('2021-11-22T18:00:00').workingDiff(start, 'days').should.equal(1);
+                // next day, before start of business
+                moment('2021-11-23T08:00:00').workingDiff(start, 'days').should.equal(1);
+                // next day, during the day
+                moment('2021-11-23T14:00:00').workingDiff(start, 'days').should.equal(1);
+                // next day, after close of business
+                moment('2021-11-23T19:00:00').workingDiff(start, 'days').should.equal(2);
+                // friday night
+                moment('2021-11-26T19:00:00').workingDiff(start, 'days').should.equal(5);
+                // saturday night
+                moment('2021-11-27T19:00:00').workingDiff(start, 'days').should.equal(5);
+                // sunday night
+                moment('2021-11-28T19:00:00').workingDiff(start, 'days').should.equal(5);
+                // next monday
+                moment('2021-11-29T11:00:00').workingDiff(start, 'days').should.equal(5);
+                moment('2021-11-29T18:00:00').workingDiff(start, 'days').should.equal(6);
+            });
+
+            it('if the start time is during business hours', () => {
+                const start  = moment('2021-11-22T11:00:00'); // Monday morning
+
+                // same day, during the day
+                moment('2021-11-22T16:00:00').workingDiff(start, 'days').should.equal(0);
+                // same day, after close of business
+                moment('2021-11-22T18:00:00').workingDiff(start, 'days').should.equal(0);
+                // next day, before start of business
+                moment('2021-11-23T08:00:00').workingDiff(start, 'days').should.equal(0);
+                // next day, during the day
+                moment('2021-11-23T10:00:00').workingDiff(start, 'days').should.equal(0);
+                moment('2021-11-23T14:00:00').workingDiff(start, 'days').should.equal(1);
+                // next day, after close of business
+                moment('2021-11-23T19:00:00').workingDiff(start, 'days').should.equal(1);
+                // subsequent day, during day
+                moment('2021-11-24T10:00:00').workingDiff(start, 'days').should.equal(1);
+                moment('2021-11-24T14:00:00').workingDiff(start, 'days').should.equal(2);
+                // subsequent day, after close of business
+                moment('2021-11-24T19:00:00').workingDiff(start, 'days').should.equal(2);
+                // friday night
+                moment('2021-11-26T19:00:00').workingDiff(start, 'days').should.equal(4);
+                // saturday night
+                moment('2021-11-27T19:00:00').workingDiff(start, 'days').should.equal(4);
+                // sunday night
+                moment('2021-11-28T19:00:00').workingDiff(start, 'days').should.equal(4);
+                // next monday
+                moment('2021-11-29T10:00:00').workingDiff(start, 'days').should.equal(4);
+                moment('2021-11-29T12:00:00').workingDiff(start, 'days').should.equal(5);
+                moment('2021-11-29T18:00:00').workingDiff(start, 'days').should.equal(5);
+            });
+
+            it('if the start time is after business hours', () => {
+                const start  = moment('2021-11-22T19:00:00'); // Monday morning
+
+                // same day, after close of business
+                moment('2021-11-22T20:00:00').workingDiff(start, 'days').should.equal(0);
+                // next day, before start of business
+                moment('2021-11-23T08:00:00').workingDiff(start, 'days').should.equal(0);
+                // next day, during the day
+                moment('2021-11-23T14:00:00').workingDiff(start, 'days').should.equal(0);
+                // next day, after close of business
+                moment('2021-11-23T19:00:00').workingDiff(start, 'days').should.equal(1);
+                // friday night
+                moment('2021-11-26T19:00:00').workingDiff(start, 'days').should.equal(4);
+                // saturday night
+                moment('2021-11-27T19:00:00').workingDiff(start, 'days').should.equal(4);
+                // sunday night
+                moment('2021-11-28T19:00:00').workingDiff(start, 'days').should.equal(4);
+                // next monday
+                moment('2021-11-29T11:00:00').workingDiff(start, 'days').should.equal(4);
+                moment('2021-11-29T18:00:00').workingDiff(start, 'days').should.equal(5);
+            });
+
+            it('if the start time is during a break', () => {
+                moment.locale('en', {
+                    workinghours:  {
+                        0: null,
+                        1: ['09:30:00', '12:00:00', '13:00:00', '17:00:00'],
+                        2: ['09:30:00', '12:00:00', '13:00:00', '17:00:00'],
+                        3: ['09:30:00', '12:00:00', '13:00:00', '17:00:00'],
+                        4: ['09:30:00', '12:00:00', '13:00:00', '17:00:00'],
+                        5: ['09:30:00', '12:00:00', '13:00:00', '17:00:00'],
+                        6: null
+                    }
+                });
+                const start  = moment('2021-11-22T12:30:00'); // Monday morning
+                start.isWorkingTime({ ignoreBreaks: true }).should.equal(true);
+                // same day, during the day
+                moment('2021-11-22T16:00:00').workingDiff(start, 'days').should.equal(0);
+                // same day, after close of business
+                moment('2021-11-22T18:00:00').workingDiff(start, 'days').should.equal(0);
+                // next day, before start of business
+                moment('2021-11-23T08:00:00').workingDiff(start, 'days').should.equal(0);
+                // next day, during a break
+                moment('2021-11-23T12:45:00').workingDiff(start, 'days').should.equal(1);
+                // next day, during the day
+                moment('2021-11-23T14:00:00').workingDiff(start, 'days').should.equal(1);
+                // next day, after close of business
+                moment('2021-11-23T14:00:00').workingDiff(start, 'days').should.equal(1);
+            });
+
+        });
+
+        describe('calendarDays', () => {
+            it('when start point is before opening on a working day', () => {
+                const start  = moment('2021-11-22T08:00:00'); // Monday morning
+
+                // same day, during the day
+                moment('2021-11-22T16:00:00').workingDiff(start, 'calendarDays').should.equal(0);
+                // same day, after close of business
+                moment('2021-11-22T18:00:00').workingDiff(start, 'calendarDays').should.equal(0);
+                // next day, before start of business
+                moment('2021-11-23T08:00:00').workingDiff(start, 'calendarDays').should.equal(1);
+                // next day, during the day
+                moment('2021-11-23T14:00:00').workingDiff(start, 'calendarDays').should.equal(1);
+                // next day, after close of business
+                moment('2021-11-23T19:00:00').workingDiff(start, 'calendarDays').should.equal(1);
+                // friday night
+                moment('2021-11-26T19:00:00').workingDiff(start, 'calendarDays').should.equal(4);
+                // saturday night
+                moment('2021-11-27T19:00:00').workingDiff(start, 'calendarDays').should.equal(4);
+                // sunday night
+                moment('2021-11-28T19:00:00').workingDiff(start, 'calendarDays').should.equal(4);
+                // next monday
+                moment('2021-11-29T11:00:00').workingDiff(start, 'calendarDays').should.equal(5);
+                moment('2021-11-29T18:00:00').workingDiff(start, 'calendarDays').should.equal(5);
+            });
+
+            it('when start point is after closing on a working day', () => {
+                const start  = moment('2021-11-22T19:00:00'); // Monday morning
+
+                // same day, during the day
+                moment('2021-11-22T16:00:00').workingDiff(start, 'calendarDays').should.equal(0);
+                // same day, after close of business
+                moment('2021-11-22T18:00:00').workingDiff(start, 'calendarDays').should.equal(0);
+                // next day, before start of business
+                moment('2021-11-23T08:00:00').workingDiff(start, 'calendarDays').should.equal(1);
+                // next day, during the day
+                moment('2021-11-23T14:00:00').workingDiff(start, 'calendarDays').should.equal(1);
+                // next day, after close of business
+                moment('2021-11-23T19:00:00').workingDiff(start, 'calendarDays').should.equal(1);
+                // friday night
+                moment('2021-11-26T19:00:00').workingDiff(start, 'calendarDays').should.equal(4);
+                // saturday night
+                moment('2021-11-27T19:00:00').workingDiff(start, 'calendarDays').should.equal(4);
+                // sunday night
+                moment('2021-11-28T19:00:00').workingDiff(start, 'calendarDays').should.equal(4);
+                // next monday
+                moment('2021-11-29T11:00:00').workingDiff(start, 'calendarDays').should.equal(5);
+                moment('2021-11-29T18:00:00').workingDiff(start, 'calendarDays').should.equal(5);
+            });
+
+            it('when start point is not a working day', () => {
+                const start  = moment('2021-11-20T08:00:00'); // Saturday morning
+
+                // same day, during the day
+                moment('2021-11-20T16:00:00').workingDiff(start, 'calendarDays').should.equal(0);
+                // same day, after close of business
+                moment('2021-11-20T18:00:00').workingDiff(start, 'calendarDays').should.equal(0);
+                // monday, before start of business
+                moment('2021-11-22T08:00:00').workingDiff(start, 'calendarDays').should.equal(1);
+                // monday, during the day
+                moment('2021-11-22T14:00:00').workingDiff(start, 'calendarDays').should.equal(1);
+                // monday, after close of business
+                moment('2021-11-22T19:00:00').workingDiff(start, 'calendarDays').should.equal(1);
+                // friday night
+                moment('2021-11-26T19:00:00').workingDiff(start, 'calendarDays').should.equal(5);
+                // saturday night
+                moment('2021-11-27T19:00:00').workingDiff(start, 'calendarDays').should.equal(5);
+                // sunday night
+                moment('2021-11-28T19:00:00').workingDiff(start, 'calendarDays').should.equal(5);
+                // next monday
+                moment('2021-11-29T11:00:00').workingDiff(start, 'calendarDays').should.equal(6);
+                moment('2021-11-29T18:00:00').workingDiff(start, 'calendarDays').should.equal(6);
+            });
+        });
+
+        describe('generated tests', () => {
+
+            it('f(a,b) + f(b,c) === f(a,c)', () => {
+                let i = 0;
+                while (i < 20) {
+                    const a = randomDate();
+                    const b = randomDate();
+                    const c = randomDate();
+                    (a.workingDiff(b, 'calendarDays') + b.workingDiff(c, 'calendarDays')).should.equal(a.workingDiff(c, 'calendarDays'));
+                    i++;
+                }
+            });
+
+            it('f(a,b) === -f(b,a)', () => {
+                let i = 0;
+                while (i < 20) {
+                    const a = randomDate();
+                    const b = randomDate();
+                    a.workingDiff(b, 'calendarDays').should.equal(-1 * b.workingDiff(a, 'calendarDays'));
+                    i++;
+                }
+            });
+
+            it('a.addWorkingDays(b).workingDiff(a) === b', () => {
+                let i = 0;
+                while (i < 20) {
+                    const a = randomDate();
+                    const b = a.clone(); // clone because adding working time mutates a
+                    const n = Math.floor(50 * Math.random());
+                    a.addWorkingTime(n, 'days').workingDiff(b, 'calendarDays').should.equal(n);
+                    i++;
+                }
+            });
+
+            it('equivalence to .diff if all days are working days', () => {
+                moment.locale('en');
+                moment.locale('en', {
+                    workinghours: {
+                        0: ['09:00:00', '17:00:00'],
+                        1: ['09:00:00', '17:00:00'],
+                        2: ['09:00:00', '17:00:00'],
+                        3: ['09:00:00', '17:00:00'],
+                        4: ['09:00:00', '17:00:00'],
+                        5: ['09:00:00', '17:00:00'],
+                        6: ['09:00:00', '17:00:00']
+                    },
+                    holidays: []
+                });
+
+                let i = 0;
+                while (i < 20) {
+                    const a = randomDate().startOf('day');
+                    const b = randomDate().startOf('day');
+                    a.workingDiff(b, 'calendarDays').should.equal(a.diff(b, 'days'));
+                    i++;
+                }
+            })
+
         });
 
     });
